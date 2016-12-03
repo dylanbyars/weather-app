@@ -1,0 +1,49 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/geo-location/geo-location.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="weather-api">
+    <template>
+
+        <!--Element defaults to using the browser's geolocation feature.-->
+
+        <geo-location latitude="{{lat}}" longitude="{{lng}}"></geo-location>
+
+        <!--Add an option to ask for a zip code if they don't want to use the auto locate. Build that in its own element so it can be lazy loaded!-->
+        
+        <iron-ajax
+             auto
+             url="http://api.openweathermap.org/data/2.5/weather?lat=[[lat]]&lon=[[lng]]&appid=c37e32558ff214d0842654dd1b6b56ad&units=metric"
+             handle-as="json"
+             last-response="{{data}}"></iron-ajax>
+
+    </template>
+    <script>
+        Polymer({
+            is: 'weather-api',
+
+            properties: {
+                
+                lat: {
+                    type: Number
+                },
+
+                lng: {
+                    type: Number
+                },
+
+                zip: {
+                    type: Number
+                },
+
+                data: {
+                    type: Object,
+                    notify: true,
+                    readOnly: true,
+                    value: ''
+                }
+            },
+
+        });
+    </script>
+</dom-module>

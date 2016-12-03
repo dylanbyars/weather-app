@@ -1,0 +1,35 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="weather-api.html">
+<link rel="import" href="weather-card.html">
+
+
+<dom-module id="weather-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <weather-api data="[[data]]"></weather-api>
+
+    <weather-card data="[[data]]"></weather-card>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'weather-app',
+
+      properties: {
+
+
+
+      },
+
+
+
+    });
+  </script>
+</dom-module>

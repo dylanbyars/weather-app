@@ -1,0 +1,7 @@
+{
+  "name": "weather-app",
+  "short_name": "weather-app",
+  "description": "A progressive web app that geolocates a user and displays their local weather in Farenheit and Celcius.",
+  "start_url": "/",
+  "display": "standalone"
+}

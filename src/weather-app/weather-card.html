@@ -1,0 +1,29 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+
+<dom-module id="weather-card">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        
+        
+        <paper-card heading="[[data.name]]" image="" elevation="1" animated-shadow="false">
+          <div class="card-content"></div>
+          <div class="card-actions">
+            
+          </div>
+        </paper-card>
+        
+
+    </template>
+    <script>
+        Polymer({
+            is: 'weather-card',
+
+            
+        });
+    </script>
+</dom-module>

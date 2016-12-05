@@ -15,7 +15,8 @@
              auto
              url="http://api.openweathermap.org/data/2.5/weather?lat=[[lat]]&lon=[[lng]]&appid=c37e32558ff214d0842654dd1b6b56ad&units=metric"
              handle-as="json"
-             last-response="{{data}}"></iron-ajax>
+             last-response="{{response}}"
+             on-response="handleResponse"></iron-ajax>
 
     </template>
     <script>
@@ -40,8 +41,119 @@
                     type: Object,
                     notify: true,
                     readOnly: true,
-                    value: ''
+                    // make sure the data prop starts off empty
+                    value: function() {
+                        return {}
+                    }
                 }
+            },
+
+            handleResponse: function() {
+
+                let e = this.response
+
+                // unit conversion functions
+
+                // convert celcius to farenheit
+                function celciusToFarenheit(num) {
+                return num * (9 / 5) + 32
+                }
+
+                // convert meters/second to miles/hour
+                function metersPerSecToMilesPerHour(num) {
+                return num * 2.23694
+                }
+
+                // convert pascals to mmHg
+                function pascalToMmhg(num) {
+                return num * 0.00750061683
+                }
+
+                // parse API response
+
+                // get city name
+                function getCity(e) {
+                return e.name
+                }
+
+                // get current weather and load it into a new object
+
+                const currentWeather = (e) => {
+                    let currentTempC = e.main.temp
+                    let currentTempF = celciusToFarenheit(currentTempC)
+                    let humidity = e.main.humidity
+                    let pascals = e.main.pressure
+                    let mmHg = pascalToMmhg(pascals)
+                    let minTempC = e.main.temp_min
+                    let maxTempC = e.main.temp_max
+                    let minTempF = celciusToFarenheit(minTempC)
+                    let maxTempF = celciusToFarenheit(maxTempC)
+                    let windSpeedMeters = e.wind.speed
+                    let windSpeedMiles = metersPerSecToMilesPerHour(windSpeedMeters)
+                    let windDirection = e.wind.deg
+                    let cloudCover = e.clouds.all
+                    let rain, snow
+
+                    // Check if the response has 'rain' or 'snow' as a key.
+                    // The response doesn't include them unless there's something to report
+
+                    return {
+                        'currentTemp': {
+                        'metric': currentTempC,
+                        'imperial': currentTempF
+                        },
+                        'humidity': humidity,
+                        'pressure': {
+                        'metric': pascals,
+                        'imperial': mmHg
+                        },
+                        'minTemp': {
+                        'metric': minTempC,
+                        'imperial': minTempF
+                        },
+                        'maxTemp': {
+                        'metric': maxTempC,
+                        'imperial': maxTempF
+                        },
+                        'wind': {
+                        'speed': {
+                            'metric': windSpeedMeters,
+                            'imperial': windSpeedMiles
+                        },
+                        'direction': windDirection
+                        },
+                        'cloudCover': cloudCover,
+                        'rain': rain,
+                        'snow': snow
+                    }
+                }
+
+                // get the sunrise and sunset times (in UTC) and convert them to local time
+
+                //get appopriate icon from http://openweathermap.org/img/w/{icon}.png
+                function getIcon(e) {
+                    let code = e.weather[0].icon
+                    return `http://openweathermap.org/img/w/${code}.png`
+                }
+
+                // get description of current weather
+                function getDescription(e) {
+                    return e.weather[0].description
+                }
+
+                const data = (e) => {
+                    return {
+                        'location': getCity(e),
+                        'weather': currentWeather(e),
+                        'description': getDescription(e),
+                        'icon': getIcon(e)
+                    }
+                }
+
+                this._setData(data(e))
+
+                console.log(this.data)
+
             },
 
         });

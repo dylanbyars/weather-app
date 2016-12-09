@@ -1,0 +1,34 @@
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+
+<dom-module id="main-toolbar">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        
+        <app-toolbar>
+            
+            <paper-icon-button icon="menu"></paper-icon-button>
+            
+            <div main-title>Weather</div>
+
+            
+            <paper-icon-button icon="search"></paper-icon-button>
+            
+            <paper-icon-button icon="add"></paper-icon-button>
+            
+
+        </app-toolbar>
+
+    </template>
+    <script>
+        Polymer({
+            is: 'main-toolbar'
+        });
+    </script>
+</dom-module>

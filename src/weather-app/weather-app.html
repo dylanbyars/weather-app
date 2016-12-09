@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="main-toolbar.html">
 <link rel="import" href="weather-api.html">
 <link rel="import" href="weather-card.html">
 
@@ -8,10 +9,14 @@
     <style>
       :host {
         display: block;
+        height: 100vh;
       }
+
     </style>
 
-    <weather-api data="[[data]]"></weather-api>
+    <!--<main-toolbar></main-toolbar>-->
+
+    <weather-api data="{{data}}"></weather-api>
 
     <weather-card data="[[data]]"></weather-card>
 

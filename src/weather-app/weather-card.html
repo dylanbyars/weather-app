@@ -1,29 +1,213 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
 
 <dom-module id="weather-card">
-    <template>
-        <style>
-            :host {
-                display: block;
-            }
-        </style>
-        
-        
-        <paper-card heading="[[data.name]]" image="" elevation="1" animated-shadow="false">
-          <div class="card-content"></div>
-          <div class="card-actions">
-            
+
+  <template>
+
+    <style>
+      paper-card {
+        width: 95vw;
+        height: 96%;
+        max-width: 370px;
+        font-size: 15px;
+        font-family: Helvetica;
+        font-weight: 500;
+        background: #8DA7BE;
+      }
+      
+      #top {
+        display: flex;
+        justify-content: space-around;
+      }
+      
+      #description {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      #all-weather {
+        display: flex;
+        justify-content: space-around;
+        flex-direction: column;
+        height: 90%;
+        color: white;
+      }
+
+      #units {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        font-size: 30px;
+      }
+
+      /*.metric {
+        color: #42CAFD;
+      }
+
+      .imperial {
+        color: #CDE6F5;
+      }*/
+      
+      .detail {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        min-height: 30px;
+        transition: 200ms ease-out;
+      }
+      
+      /*.detail:nth-child(1),
+      .detail:nth-child(2),
+      .detail:nth-child(3) {
+        border-bottom: 1px solid blue;
+      }*/
+      
+      .detail:hover {
+        background: #B2FFD6;
+      }
+      
+      .stat {
+        width: 25vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 21px;
+      }
+      
+      .label {
+        width: 33vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      #arrow {
+        color: #F03A47;
+      }
+      
+      .wind-container {
+        display: flex;
+        justify-content: space-around;
+        width: 18vw;
+      }
+    </style>
+
+    <weather-api data="{{data}}"></weather-api>
+
+    <paper-card>
+
+      <div id="top">
+
+        <h3>[[data.location]]</h3>
+
+        <img id="icon" src="[[data.icon]]" alt="[[data.description]]">
+
+        <div id="description">[[data.description]]</div>
+
+      </div>
+
+      <div id="all-weather">
+
+        <div id="units">
+
+          <div class="unit">&#8451;</div>
+
+          <div class="unit">&#8457;</div>
+
+        </div>
+
+        <div id="current-temp" class="detail">
+
+          <div class="metric stat">[[data.weather.currentTemp.metric]]</div>
+
+          <div class="label">Current</div>
+
+          <div class="imperial stat">[[data.weather.currentTemp.imperial]]</div>
+
+        </div>
+
+        <div id="high-low" class="detail">
+
+          <div class="metric stat">[[data.weather.maxTemp.metric]] / [[data.weather.minTemp.metric]]</div>
+
+          <div class="label">High/Low</div>
+
+          <div class="imperial stat">[[data.weather.maxTemp.imperial]] / [[data.weather.minTemp.imperial]]</div>
+
+        </div>
+
+        <div id="pressure" class="detail">
+
+          <div class="metric stat">[[data.weather.pressure.metric]] hPa</div>
+
+          <div class="label">Pressure</div>
+
+          <div class="imperial stat">[[data.weather.pressure.imperial]] mmHg</div>
+
+        </div>
+
+        <div id="speed" class="detail">
+
+          <div class="metric stat">[[data.weather.wind.speed.metric]] m/s</div>
+
+          <div class="label">Wind Speed</div>
+
+          <div class="imperial stat">[[data.weather.wind.speed.imperial]] miles/hour</div>
+
+        </div>
+
+        <div id="direction" class="detail">
+
+          <div class="label">Wind Direction</div>
+
+          <div class="wind-container">
+
+            <div class="stat">[[data.weather.wind.direction]]&deg;</div>
+
+            <iron-icon id="arrow" icon="maps:navigation"></iron-icon>
+
           </div>
-        </paper-card>
-        
 
-    </template>
-    <script>
-        Polymer({
-            is: 'weather-card',
+        </div>
 
-            
-        });
-    </script>
+        <div id="humidity" class="detail">
+
+          <div class="label">Humidity</div>
+
+          <div class="stat">[[data.weather.humidity]]%</div>
+
+        </div>
+
+    </paper-card>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'weather-card',
+      properties: {
+
+
+      },
+
+      listeners: {
+        'loaded': 'setDirection'
+      },
+
+      // sets the direction of the wind arrow after the api data is loaded
+      setDirection: function(e) {
+        if (e.detail.loaded) {
+          let arrow = this.$.arrow
+          let direction = this.data.weather.wind.direction
+          arrow.style.transform = `rotate(${direction}deg`
+        }
+      }
+
+
+    })
+  </script>
+
 </dom-module>

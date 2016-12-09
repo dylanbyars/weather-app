@@ -45,40 +45,54 @@
                     value: function() {
                         return {}
                     }
-                }
+                },
+
             },
 
             handleResponse: function() {
-
-                let e = this.response
 
                 // unit conversion functions
 
                 // convert celcius to farenheit
                 function celciusToFarenheit(num) {
-                return num * (9 / 5) + 32
+                    return num * (9 / 5) + 32
                 }
 
                 // convert meters/second to miles/hour
                 function metersPerSecToMilesPerHour(num) {
-                return num * 2.23694
+                    return num * 2.23694
                 }
 
                 // convert pascals to mmHg
                 function pascalToMmhg(num) {
-                return num * 0.00750061683
+                    return num * 0.00750061683
                 }
 
                 // parse API response
 
                 // get city name
                 function getCity(e) {
-                return e.name
+                    return e.name
+                }
+                
+                // get city id
+                // this'll be useful for displaying multiple weather cards later
+                function getCityId(e) {
+                    return e.id
                 }
 
                 // get current weather and load it into a new object
-
                 const currentWeather = (e) => {
+                
+                    function formatNumber(num) {
+                        // test if number has a decimal in it at all
+                        if (!/\./.test(num.toString())) {
+                            return num.toString()
+                        } else {
+                            return num.toString().split(/(-?\d{1,3}\.\d{1,2})/)[1]
+                        }
+                    }
+                    
                     let currentTempC = e.main.temp
                     let currentTempF = celciusToFarenheit(currentTempC)
                     let humidity = e.main.humidity
@@ -99,62 +113,65 @@
 
                     return {
                         'currentTemp': {
-                        'metric': currentTempC,
-                        'imperial': currentTempF
+                            'metric': formatNumber(currentTempC),
+                            'imperial': formatNumber(currentTempF)
                         },
                         'humidity': humidity,
                         'pressure': {
-                        'metric': pascals,
-                        'imperial': mmHg
+                            'metric': pascals,
+                            'imperial': formatNumber(mmHg)
                         },
                         'minTemp': {
-                        'metric': minTempC,
-                        'imperial': minTempF
+                            'metric': formatNumber(minTempC),
+                            'imperial': formatNumber(minTempF)
                         },
                         'maxTemp': {
-                        'metric': maxTempC,
-                        'imperial': maxTempF
+                            'metric': formatNumber(maxTempC),
+                            'imperial': formatNumber(maxTempF)
                         },
                         'wind': {
-                        'speed': {
-                            'metric': windSpeedMeters,
-                            'imperial': windSpeedMiles
-                        },
-                        'direction': windDirection
+                            'speed': {
+                                'metric': formatNumber(windSpeedMeters),
+                                'imperial': formatNumber(windSpeedMiles)
+                            },
+                            'direction': windDirection
                         },
                         'cloudCover': cloudCover,
                         'rain': rain,
                         'snow': snow
+                        }
                     }
-                }
 
-                // get the sunrise and sunset times (in UTC) and convert them to local time
+                    // get the sunrise and sunset times (in UTC) and convert them to local time
 
-                //get appopriate icon from http://openweathermap.org/img/w/{icon}.png
-                function getIcon(e) {
-                    let code = e.weather[0].icon
-                    return `http://openweathermap.org/img/w/${code}.png`
-                }
-
-                // get description of current weather
-                function getDescription(e) {
-                    return e.weather[0].description
-                }
-
-                const data = (e) => {
-                    return {
-                        'location': getCity(e),
-                        'weather': currentWeather(e),
-                        'description': getDescription(e),
-                        'icon': getIcon(e)
+                    //get appopriate icon from http://openweathermap.org/img/w/{icon}.png
+                    function getIcon(e) {
+                        let code = e.weather[0].icon
+                        return `http://openweathermap.org/img/w/${code}.png`
                     }
-                }
 
-                this._setData(data(e))
+                    // get description of current weather
+                    function getDescription(e) {
+                        return e.weather[0].description
+                    }
 
-                console.log(this.data)
+                    const data = (e) => {
+                        return {
+                            'location': getCity(e),
+                            'cityId': getCityId(e),
+                            'weather': currentWeather(e),
+                            'description': getDescription(e),
+                            'icon': getIcon(e)
+                        }
+                    }
 
-            },
+                    this._setData(data(this.response))
+                    
+                    // Fire an event to notify that the data's loaded
+                    this.fire('loaded', {loaded: true})
+                    
+                    console.log(this.data)
+                },
 
         });
     </script>

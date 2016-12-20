@@ -11,7 +11,7 @@
       #card {
         width: 100%;
         height: 100%;
-        max-width: 370px;
+        max-width: 390px;
         font-size: 13.5px;
         font-family: Helvetica;
         background: #FFFCFF;
@@ -20,6 +20,7 @@
         justify-content: space-around;
         align-items: center;
         border-radius: 2px;
+        font-weight: 300;
       }
 
       .hidden {
@@ -31,31 +32,31 @@
         justify-content: space-around;
         align-items: center;
         min-height: 75px;
-        height: 30%;
-        width: 90%;
+        height: 33%;
+        width: 100%;
       }
       
       #location {
-        font-size: 18px;
+        font-size: 38px;
+        font-weight: 300;
       }
 
       #icon {
-        width: 33%;
+        width: 30%;
       }
       
       #description {
         display: flex;
-        flex-direction: column;
         justify-content: center;
         align-items: center;
-        font-size: 16px;
+        font-size: 19px;
       }
       
       #units {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 29px;
+        font-size: 71px;
         width: 100%;
       }
       
@@ -64,31 +65,37 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        /*border: solid;*/
       }
       
       #all-weather {
         display: flex;
         height: 75%;
         width: 100%;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: center;
         flex-direction: column;
       }
 
       #main {
-        min-height: 45%;
-      }
-
-      .quiver {
+        min-height: 40%;
+        width: 100%;
         display: flex;
+        flex-direction: column;
         justify-content: space-around;
         align-items: center;
-        min-width: 95px; 
+      }
+
+      #current-temp {
+        font-size: 41px;
       }
 
       #particulars {
-        height: 55%;
+        height: 60%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
       }
       
       .detail {
@@ -100,27 +107,24 @@
         transition: 200ms ease-out;
       }
       
-      .detail:nth-child(1):hover,
-      .detail:nth-child(2):hover,
-      .detail:nth-child(3):hover,
-      .detail:nth-child(4):hover {
-        background: #B2FFD6;
-      }
-      
       .stat {
-        width: 25%;
+        width: 30%;
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 
+        font-size: 23px;
       }
       
       .label {
-        width: 33%;
+        width: 20%;
         display: flex;
         justify-content: center;
         align-items: center;
         font-size: 1.7em;
+      }
+
+      .quiver {
+        width: 40%;
       }
       
       #arrow {
@@ -129,18 +133,7 @@
         transform-origin: 80%;
       }
       
-      #direction > .label {
-        width: 40%;
-      }
       
-      .wind-container {
-        display: flex;
-        justify-content: space-around;
-      }
-      
-      #humidity {
-        width: 38%;
-      }
     </style>
 
     <weather-api data="{{data}}"></weather-api>
@@ -151,14 +144,11 @@
 
         <h3 id="location">[[data.location]]</h3>
           
-        <div id="description">
-          <p>[[data.description]]</p>
-          <img id="icon" src="[[data.icon]]" alt="[[data.description]]">
-        </div>
-
+        <p id="description">[[data.description]]</p>
+          
       </div>
 
-      <div id="time"></div>
+      <!--<div id="time"></div>-->
 
       <div id="units">
 
@@ -174,37 +164,11 @@
 
           <div id="current-temp" class="detail">
 
-            <div class="metric stat">[[data.weather.currentTemp.metric]]</div>
+            <div class="metric">[[data.weather.currentTemp.metric]]&deg;</div>
 
-            <div class="label">Current</div>
+            <img id="icon" src="[[data.icon]]" alt="[[data.description]]">
 
-            <div class="imperial stat">[[data.weather.currentTemp.imperial]]</div>
-
-          </div>
-
-          <div id="wind">
-
-            <div id="speed" class="detail">
-
-              <div class="metric stat">[[data.weather.wind.speed.metric]] m/s</div>
-
-              <div class="label">Wind</div>
-
-              <div class="imperial stat">[[data.weather.wind.speed.imperial]] mph</div>
-
-            </div>
-
-            <div id="direction" class="detail">
-
-              <div class="quiver">
-
-                <div class="stat">[[data.weather.wind.direction]]&deg;</div>
-
-                <iron-icon id="arrow" icon="maps:navigation"></iron-icon>
-
-              </div>
-
-            </div>
+            <div class="imperial">[[data.weather.currentTemp.imperial]]&deg;</div>
 
           </div>
 
@@ -214,19 +178,37 @@
 
           <div id="high-low" class="detail">
 
-            <div class="metric stat">[[data.weather.maxTemp.metric]] / [[data.weather.minTemp.metric]]</div>
+            <div class="metric stat">[[data.weather.maxTemp.metric]]&deg; / [[data.weather.minTemp.metric]]&deg;</div>
 
-            <div class="label">High/Low</div>
+            <div class="label">h/l</div>
 
-            <div class="imperial stat">[[data.weather.maxTemp.imperial]] / [[data.weather.minTemp.imperial]]</div>
+            <div class="imperial stat">[[data.weather.maxTemp.imperial]]&deg; / [[data.weather.minTemp.imperial]]&deg;</div>
 
           </div>
 
-          <div id="pressure" class="detail">
+          <div id="speed" class="detail">
+
+            <div class="metric stat">[[data.weather.wind.speed.metric]] <span class="unit--speed">m/s</span></div>
+
+            <div class="label">wind</div>
+
+            <div class="imperial stat">[[data.weather.wind.speed.imperial]] <span class="unit--speed">mph</span></div>
+          
+          </div>
+
+          <div id="direction" class="detail quiver">
+
+            <div class="stat">[[data.weather.wind.direction]]&deg;</div>
+
+            <iron-icon id="arrow" icon="maps:navigation"></iron-icon>
+
+          </div>
+
+          <!--<div id="pressure" class="detail">
 
             <div class="metric stat">[[data.weather.pressure.metric]] hPa</div>
 
-            <div class="label">Pressure</div>
+            <div class="label">pressure</div>
 
             <div class="imperial stat">[[data.weather.pressure.imperial]] mmHg</div>
 
@@ -234,11 +216,11 @@
 
           <div id="humidity" class="detail">
 
-            <div class="label">Humidity</div>
+            <div class="label">humidity</div>
 
             <div class="stat">[[data.weather.humidity]]%</div>
 
-          </div>
+          </div>-->
 
         </div>
 
@@ -274,13 +256,16 @@
           // The arrow's not showing up at all and i think it's because the direction has a decimal in it today. Fiddle and fix. 
           let direction = Math.floor(this.data.weather.wind.direction)
           arrow.style.transform = `rotate(${direction}deg`
-          // sets current date
-          let now = new Date().toString().split(' ').slice(0, 3).join(' ')
-          this.$.time.innerHTML = now
           // set loaded to true so the loading screen goes away
           this.loaded =  true
         }
       },
+
+      setTime: function() {
+        // sets current date
+        let now = new Date().toString().split(' ').slice(0, 3).join(' ')
+        this.$.time.innerHTML = now
+      }
 
     })
   </script>

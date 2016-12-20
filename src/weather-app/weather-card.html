@@ -1,187 +1,250 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="weather-api.html">
+
 
 <dom-module id="weather-card">
 
   <template>
 
     <style>
-      paper-card {
-        width: 95vw;
-        height: 96%;
+      #card {
+        width: 100%;
+        height: 100%;
         max-width: 370px;
-        font-size: 15px;
+        font-size: 13.5px;
         font-family: Helvetica;
-        font-weight: 500;
-        background: #8DA7BE;
+        background: #FFFCFF;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        border-radius: 2px;
+      }
+
+      .hidden {
+        filter: blur(5px)
       }
       
       #top {
         display: flex;
         justify-content: space-around;
+        align-items: center;
+        min-height: 75px;
+        height: 30%;
+        width: 90%;
+      }
+      
+      #location {
+        font-size: 18px;
+      }
+
+      #icon {
+        width: 33%;
       }
       
       #description {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
+        font-size: 16px;
+      }
+      
+      #units {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 29px;
+        width: 100%;
+      }
+      
+      .unit {
+        width: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /*border: solid;*/
       }
       
       #all-weather {
         display: flex;
+        height: 75%;
+        width: 100%;
         justify-content: space-around;
+        align-items: center;
         flex-direction: column;
-        height: 90%;
-        color: white;
       }
 
-      #units {
+      #main {
+        min-height: 45%;
+      }
+
+      .quiver {
         display: flex;
         justify-content: space-around;
         align-items: center;
-        font-size: 30px;
+        min-width: 95px; 
       }
 
-      /*.metric {
-        color: #42CAFD;
+      #particulars {
+        height: 55%;
       }
-
-      .imperial {
-        color: #CDE6F5;
-      }*/
       
       .detail {
         display: flex;
         justify-content: space-around;
         align-items: center;
         min-height: 30px;
+        width: 95%;
         transition: 200ms ease-out;
       }
       
-      /*.detail:nth-child(1),
-      .detail:nth-child(2),
-      .detail:nth-child(3) {
-        border-bottom: 1px solid blue;
-      }*/
-      
-      .detail:hover {
+      .detail:nth-child(1):hover,
+      .detail:nth-child(2):hover,
+      .detail:nth-child(3):hover,
+      .detail:nth-child(4):hover {
         background: #B2FFD6;
       }
       
       .stat {
-        width: 25vw;
+        width: 25%;
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 21px;
+        font-size: 
       }
       
       .label {
-        width: 33vw;
+        width: 33%;
         display: flex;
         justify-content: center;
         align-items: center;
+        font-size: 1.7em;
       }
       
       #arrow {
-        color: #F03A47;
+        color: red;
+        width: 50px;
+        transform-origin: 80%;
+      }
+      
+      #direction > .label {
+        width: 40%;
       }
       
       .wind-container {
         display: flex;
         justify-content: space-around;
-        width: 18vw;
+      }
+      
+      #humidity {
+        width: 38%;
       }
     </style>
 
     <weather-api data="{{data}}"></weather-api>
 
-    <paper-card>
+    <div id="card" class$="{{hideWeather(loaded)}}">
 
       <div id="top">
 
-        <h3>[[data.location]]</h3>
+        <h3 id="location">[[data.location]]</h3>
+          
+        <div id="description">
+          <p>[[data.description]]</p>
+          <img id="icon" src="[[data.icon]]" alt="[[data.description]]">
+        </div>
 
-        <img id="icon" src="[[data.icon]]" alt="[[data.description]]">
+      </div>
 
-        <div id="description">[[data.description]]</div>
+      <div id="time"></div>
+
+      <div id="units">
+
+        <div class="unit celcius">&#8451;</div>
+
+        <div class="unit fahrenheit">&#8457;</div>
 
       </div>
 
       <div id="all-weather">
 
-        <div id="units">
+        <div id="main">
 
-          <div class="unit">&#8451;</div>
+          <div id="current-temp" class="detail">
 
-          <div class="unit">&#8457;</div>
+            <div class="metric stat">[[data.weather.currentTemp.metric]]</div>
 
-        </div>
+            <div class="label">Current</div>
 
-        <div id="current-temp" class="detail">
+            <div class="imperial stat">[[data.weather.currentTemp.imperial]]</div>
 
-          <div class="metric stat">[[data.weather.currentTemp.metric]]</div>
+          </div>
 
-          <div class="label">Current</div>
+          <div id="wind">
 
-          <div class="imperial stat">[[data.weather.currentTemp.imperial]]</div>
+            <div id="speed" class="detail">
 
-        </div>
+              <div class="metric stat">[[data.weather.wind.speed.metric]] m/s</div>
 
-        <div id="high-low" class="detail">
+              <div class="label">Wind</div>
 
-          <div class="metric stat">[[data.weather.maxTemp.metric]] / [[data.weather.minTemp.metric]]</div>
+              <div class="imperial stat">[[data.weather.wind.speed.imperial]] mph</div>
 
-          <div class="label">High/Low</div>
+            </div>
 
-          <div class="imperial stat">[[data.weather.maxTemp.imperial]] / [[data.weather.minTemp.imperial]]</div>
+            <div id="direction" class="detail">
 
-        </div>
+              <div class="quiver">
 
-        <div id="pressure" class="detail">
+                <div class="stat">[[data.weather.wind.direction]]&deg;</div>
 
-          <div class="metric stat">[[data.weather.pressure.metric]] hPa</div>
+                <iron-icon id="arrow" icon="maps:navigation"></iron-icon>
 
-          <div class="label">Pressure</div>
+              </div>
 
-          <div class="imperial stat">[[data.weather.pressure.imperial]] mmHg</div>
-
-        </div>
-
-        <div id="speed" class="detail">
-
-          <div class="metric stat">[[data.weather.wind.speed.metric]] m/s</div>
-
-          <div class="label">Wind Speed</div>
-
-          <div class="imperial stat">[[data.weather.wind.speed.imperial]] miles/hour</div>
-
-        </div>
-
-        <div id="direction" class="detail">
-
-          <div class="label">Wind Direction</div>
-
-          <div class="wind-container">
-
-            <div class="stat">[[data.weather.wind.direction]]&deg;</div>
-
-            <iron-icon id="arrow" icon="maps:navigation"></iron-icon>
+            </div>
 
           </div>
 
         </div>
 
-        <div id="humidity" class="detail">
+        <div id="particulars">
 
-          <div class="label">Humidity</div>
+          <div id="high-low" class="detail">
 
-          <div class="stat">[[data.weather.humidity]]%</div>
+            <div class="metric stat">[[data.weather.maxTemp.metric]] / [[data.weather.minTemp.metric]]</div>
+
+            <div class="label">High/Low</div>
+
+            <div class="imperial stat">[[data.weather.maxTemp.imperial]] / [[data.weather.minTemp.imperial]]</div>
+
+          </div>
+
+          <div id="pressure" class="detail">
+
+            <div class="metric stat">[[data.weather.pressure.metric]] hPa</div>
+
+            <div class="label">Pressure</div>
+
+            <div class="imperial stat">[[data.weather.pressure.imperial]] mmHg</div>
+
+          </div>
+
+          <div id="humidity" class="detail">
+
+            <div class="label">Humidity</div>
+
+            <div class="stat">[[data.weather.humidity]]%</div>
+
+          </div>
 
         </div>
 
-    </paper-card>
+      </div>
+
+    </div>
 
   </template>
 
@@ -189,23 +252,35 @@
     Polymer({
       is: 'weather-card',
       properties: {
-
+        loaded: {
+          type: Boolean,
+          value: false
+        }
 
       },
 
       listeners: {
-        'loaded': 'setDirection'
+        'loaded': 'setSessionDetails',
       },
 
-      // sets the direction of the wind arrow after the api data is loaded
-      setDirection: function(e) {
-        if (e.detail.loaded) {
-          let arrow = this.$.arrow
-          let direction = this.data.weather.wind.direction
-          arrow.style.transform = `rotate(${direction}deg`
-        }
-      }
+      hideWeather: function() {
+        return !this.loaded ? 'hidden' : ''
+      },
 
+      setSessionDetails: function(e) {
+        if (e.detail.loaded) {
+          // sets the direction of the wind arrow after the api data is loaded
+          let arrow = this.$.arrow
+          // The arrow's not showing up at all and i think it's because the direction has a decimal in it today. Fiddle and fix. 
+          let direction = Math.floor(this.data.weather.wind.direction)
+          arrow.style.transform = `rotate(${direction}deg`
+          // sets current date
+          let now = new Date().toString().split(' ').slice(0, 3).join(' ')
+          this.$.time.innerHTML = now
+          // set loaded to true so the loading screen goes away
+          this.loaded =  true
+        }
+      },
 
     })
   </script>
